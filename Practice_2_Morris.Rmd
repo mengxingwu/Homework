@@ -1,0 +1,59 @@
+---
+title: "Practice_2"
+author: "Meng-Hsin, Wu"
+date: "2021/10/19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+```{r cars}
+library(dplyr)
+library(tidyr)
+element1<-data.frame(
+  before_diet= c(104, 95, 87, 77, 112),
+  after_diet= c(96, 91, 81, 75, 118),
+  row.names = c('subject_1', 'subject_2', 'subject_3', 
+                'subject_4', 'subject_5')
+)
+str(element1)
+as.numeric(element1$before_diet)
+as.numeric(element1$after_diet)
+str(element1)
+element1_2<- element1%>%pivot_longer(
+  everything(),
+  names_to= 'time',
+  values_to= 'weight',
+)
+str(element1_2)
+element2_1<- c('subject_1', 'subject_2', 'subject_3', 
+               'subject_4', 'subject_5')
+element2_2<- c(c(element1$before_diet)-c(element1$after_diet) )
+str(element2_1)
+str(element2_2)
+element2_3<-data.frame(
+  subject= element2_1,
+  weight_loss= element2_2
+)
+str(element2_2)
+list2<-list(A= element2_1, B= element2_2, 
+      C= element2_3 )
+str(list2)
+BUBBLE_DIET<- list(A= element1_2, B= list2)
+str(BUBBLE_DIET)
+BUBBLE_DIET
+```
+
+## Including Plots
+
+
+
+```{r pressure, echo=FALSE}
+
+```
+
