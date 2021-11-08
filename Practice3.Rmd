@@ -1,0 +1,53 @@
+---
+title: "Practice3"
+author: "Meng-Hsin, Wu"
+date: "2021/11/8"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r library leaflet}
+library(leaflet)
+library(maptools)
+library(rgdal)
+library (sp)
+library(raster)
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggspatial)
+library(rgbif)
+library(mapr)
+library(marmap)
+```
+Start creating a map
+
+```{r creating maps}
+toyota<-leaflet()%>%
+  setView(121.493550,23.846119,zoom=13)%>% addTiles()
+toyota
+t.tiles<-toyota%>%addProviderTiles(providers$OpenTopoMap)%>%
+  addProviderTiles('Esri.WorldImagery',
+    options=providerTileOptions(opacity = 0.5))%>%
+  addProviderTiles('OpenRailwayMap')
+dormitory<-makeIcon(
+  iconUrl='https://en.pimg.jp/034/145/491/1/34145491.jpg',
+  iconWidth=25, iconHeight=25,
+  )
+t.tiles%>%
+  addMarkers(lng=c(121.493738, 121.622945, 
+                   121.610602),
+              lat=c(23.846305,23.987527,
+                    24.033322 ) ,
+             icon= dormitory)
+```
+
+```{}
+```
+
+
+
