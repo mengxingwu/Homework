@@ -28,7 +28,7 @@ Start creating a map
 
 ```{r creating maps}
 toyota<-leaflet()%>%
-  setView(121.493550,23.846119,zoom=13)%>% addTiles()
+  setView(121.493550,23.846119,zoom=11)%>% addTiles()
 toyota
 t.tiles<-toyota%>%addProviderTiles(providers$OpenTopoMap)%>%
   addProviderTiles('Esri.WorldImagery',
@@ -36,18 +36,74 @@ t.tiles<-toyota%>%addProviderTiles(providers$OpenTopoMap)%>%
   addProviderTiles('OpenRailwayMap')
 dormitory<-makeIcon(
   iconUrl='https://en.pimg.jp/034/145/491/1/34145491.jpg',
-  iconWidth=25, iconHeight=25,
+  iconWidth=20, iconHeight=20,
   )
-t.tiles%>%
+dormitory
+ttile.D<-t.tiles%>%
   addMarkers(lng=c(121.493738, 121.622945, 
                    121.610602),
               lat=c(23.846305,23.987527,
                     24.033322 ) ,
-             icon= dormitory)
+             icon= dormitory,
+popup=c('Fengtien', 'Farglory',
+                     'Beipu'),
+label = 'Click to see villages')
+library(readxl)
+dive<-read_excel('~/Courses of 110 semester-1/R Introduction/Week_7/hulien_dive_spots.xlsx')
+coralicon<- makeIcon('https://cdn.iconscout.com/icon/free/png-256/coral-2524619-2112940.png',
+                     iconWidth= 20, 
+                     iconHeight = 20)
+ttile.D
+
 ```
 
-```{}
+```{r new tile}
+ttile.D%>%
+  addProviderTiles(provider = 'Stamen.TopOSMFeatures',
+        providerTileOptions(opacity=1))
+ttile.2<-ttile.D%>%leaflet::addMarkers(lng=dive$lng,
+      lat=dive$lat,
+      label=dive$site,
+      icon= coralicon,
+      popup=c('Best classroom for SCUBA training in Hualien','Low visibility with nice coral condition','High percentage of soft corals','High concentration of suspended particles','Unsuitable for newbie for the mountainous waves','Luxuriant corals inside the levee','Bare rocky bed covered by macroalgae','Not recommanded to dive in harbor','Grandiose scenery with gorgonians and antipatherians'))
+ttile.2
 ```
 
+```{r create another tile}
+diveshop<-makeIcon(
+  iconUrl = 'https://cdn.iconscout.com/icon/premium/png-256-thumb/scuba-diving-2681342-2224533.png',
+  iconWidth= 25,
+  iconHeight = 25
+)
+ttile.3<-ttile.2%>%addMarkers(lng=121.603700,
+      lat= 23.973585, 
+      label = 'PeaceDiving',
+      popup = 'Best diving shop in Hualien',
+      icon= diveshop)
+job<-makeIcon(
+  iconUrl = 'https://w7.pngwing.com/pngs/324/113/png-transparent-computer-icons-symbol-running-work-miscellaneous-text-hand.png',
+  iconWidth = 25, iconHeight = 25
+)
+  ttile.3%>%addMarkers(
+    lng= c(121.451673,121.603514,
+           121.597489,121.530809,
+          121.606582,121.592862,
+          121.349598),
+    lat= c(23.807898,23.901176,23.970670,
+           23.882791,24.012174,24.003230,
+           23.422156),
+    label=c('Slaughterhouse_1',
+            'Farglory Oceanpark',
+            'Takahashi Animal Hospital',
+            'Slaughterhouse_2',
+            'Slaughterhouse_3',
+            'Slaughterhouse_4',
+            'Slaughterhouse_5'
+            ),
+    icon = job,
+    clusterOptions = markerClusterOptions()
+  )
 
+
+```
 
