@@ -146,7 +146,7 @@ ttile.7<-ttile6%>% addPolygons(
   opacity=0.5, label='Huanman groove',
    popup = 'The place where we deployed 
   our first photogrammetry plot',
-  weight=2
+  weight=2.1
 )
 ttile.7
 ```
