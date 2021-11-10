@@ -1,0 +1,152 @@
+---
+title: "Practice3"
+author: "Meng-Hsin, Wu"
+date: "2021/11/8"
+output: html_document
+---
+The map I  created here was the main footprints through my 3-year life in Hualien.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r library leaflet}
+library(leaflet)
+library(maptools)
+library(rgdal)
+library (sp)
+library(raster)
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggspatial)
+library(rgbif)
+library(mapr)
+library(marmap)
+```
+Start creating a map
+
+```{r creating maps for my dormitories}
+toyota<-leaflet()%>%
+  setView(121.493550,23.846119,zoom=11)%>% addTiles()
+toyota
+t.tiles<-toyota%>%addProviderTiles(providers$OpenTopoMap)%>%
+  addProviderTiles('Esri.WorldImagery',
+    options=providerTileOptions(opacity = 0.5))%>%
+  addProviderTiles('OpenRailwayMap')
+dormitory<-makeIcon(
+  iconUrl='https://en.pimg.jp/034/145/491/1/34145491.jpg',
+  iconWidth=20, iconHeight=20,
+  )
+dormitory
+ttile.D<-t.tiles%>%
+  addMarkers(lng=c(121.493738, 121.622945, 
+                   121.610602),
+              lat=c(23.846305,23.987527,
+                    24.033322 ) ,
+             icon= dormitory,
+popup=c('Fengtien', 'Farglory',
+                     'Beipu'),
+label = 'Click to see villages')
+library(readxl)
+dive<-read_excel('~/Courses of 110 semester-1/R Introduction/Week_7/hulien_dive_spots.xlsx')
+coralicon<- makeIcon('https://cdn.iconscout.com/icon/free/png-256/coral-2524619-2112940.png',
+                     iconWidth= 20, 
+                     iconHeight = 20)
+ttile.D
+
+```
+Let's review dive sites and reef condition in Hualien
+
+```{r new tile for diving sites}
+ttile.D%>%
+  addProviderTiles(provider = 'Stamen.TopOSMFeatures',
+        providerTileOptions(opacity=1))
+ttile.2<-ttile.D%>%leaflet::addMarkers(lng=dive$lng,
+      lat=dive$lat,
+      label=dive$site,
+      icon= coralicon,
+      popup=c('Best classroom for SCUBA training in Hualien','Low visibility with nice coral condition','High percentage of soft corals','High concentration of suspended particles','Unsuitable for newbie for the mountainous waves','Luxuriant corals inside the levee','Bare rocky bed covered by macroalgae','It is not recommanded to dive in harbor','Grandiose scenery with gorgonians and antipatherians'),
+      clusterOptions = markerClusterOptions())
+ttile.2
+```
+
+I'd like to mark where I've worked.
+```{r create another tile about my jobs}
+diveshop<-makeIcon(
+  iconUrl = 'https://cdn.iconscout.com/icon/premium/png-256-thumb/scuba-diving-2681342-2224533.png',
+  iconWidth= 25,
+  iconHeight = 25
+)
+ttile.3<-ttile.2%>%addMarkers(lng=121.603700,
+      lat= 23.973585, 
+      label = 'PeaceDiving',
+      popup = 'Best diving shop in Hualien',
+      icon= diveshop)
+job<-makeIcon(
+  iconUrl = 'https://w7.pngwing.com/pngs/324/113/png-transparent-computer-icons-symbol-running-work-miscellaneous-text-hand.png',
+  iconWidth = 25, iconHeight = 25
+)
+ttile.4<-ttile.3%>%addMarkers(
+    lng= c(121.451673,121.603514,
+           121.597489,121.530809,
+          121.606582,121.592862,
+          121.349598),
+    lat= c(23.807898,23.901176,23.970670,
+           23.882791,24.012174,24.003230,
+           23.422156),
+    label=c('Slaughterhouse_1',
+            'Farglory Oceanpark',
+            'Takahashi Animal Hospital',
+            'Slaughterhouse_2',
+            'Slaughterhouse_3',
+            'Slaughterhouse_4',
+            'Slaughterhouse_5'
+            ),
+    icon = job,
+    clusterOptions = markerClusterOptions()
+  )
+ttile.4
+
+```
+
+Now, I'd like to label several marine area that are unforgettable to me.
+```{r label area}
+p.lng<-c(121.514189,121.516431,
+         121.514377,121.512545,121.512813)
+p.lat<-c(23.485095,23.483511,23.482640,
+         23.483847,23.484447 )
+ttile.5<-ttile.4%>%addPolygons(lng= p.lng,
+              lat= p.lat, 
+              color='#ff0000',
+              opacity= 0.3,
+              label='Recreational Area of Shitiping',
+              weight= 2)
+p.lng.2<-c( 121.547576,
+            121.551309,
+            121.556588,
+            121.554721)
+p.lat.2<-c(23.659463,23.667678,23.666184,
+           23.659300)
+ttile6<-ttile.5%>%addPolygons(lng=p.lng.2,
+                  lat=p.lat.2,
+                  color='#ff0000',
+                  opacity= 0.49,
+                  label= 'Hsinshe Artificial Reef',
+                  popup = 'Amazing soft-coral colonies',
+                  weight=2)
+ttile.7<-ttile6%>% addPolygons(
+  lng= c( 121.511829,
+          121.511577,
+         121.512902),
+  lat=c(23.491019,
+        23.492726,
+        23.491550),
+  color='#ff0000',
+  opacity=0.5, label='Huanman groove',
+   popup = 'The place where we deployed 
+  our first photogrammetry plot',
+  weight=2
+)
+ttile.7
+```
