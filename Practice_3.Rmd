@@ -43,7 +43,7 @@ ttile.D<-t.tiles%>%
   addMarkers(lng=c(121.493738, 121.622945, 
                    121.610602),
               lat=c(23.846305,23.987527,
-                    24.033322 ) ,
+                    24.033323 ) ,
              icon= dormitory,
 popup=c('Fengtien', 'Farglory',
                      'Beipu'),
