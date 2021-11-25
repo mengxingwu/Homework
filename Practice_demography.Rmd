@@ -1,0 +1,141 @@
+---
+title: "Practice_Demography_Change"
+author: "Meng-Hsin, Wu"
+date: "2021/11/25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+According to the equations in this model, let's create our own function call osc3.
+
+Creating new function
+---
+```{r new function}
+osc3<-function(r1,alpha12,r2,alpha21,
+               N1_start,N2_start,t){
+  N1<-rep(1,t)
+  N2<-rep(1,t)
+  N1[1]<-N1_start
+  N2[1]<-N2_start
+  K1<-100
+  K2<-100
+  for(i in 2:t){
+    N1[i]<-N1[i-1]+N1[i-1]*r1*((K1-N1[i-1]-alpha12*N2)/K1)
+    N2[i]<-N2[i-1]+N2[i-1]*r2*((K2-N2[i-1]-alpha21*N1)/K2)
+  }
+  generation<-c(1:t)
+  par(las=1, lwd=2, lty=2,
+      xlim=c(0,100),
+      ylim=c(0,100))
+  
+  if(N1[1]==0){plot(N2~generation,
+    type='l', 
+    col='red')
+    title(main='N2 only' )}else{
+      if(N2[1]==0){plot(N1~generation,
+      type='l', col='blue')
+        title(main='N1 only')}else{
+  plot(N1~generation,
+  type='l', col='blue')
+  lines(N2~generation, col='red')
+  title(main='Both species competing')
+  legend(x=80, y=60,
+         legend=c('N1','N2'),
+         col=c('blue', 'red'),
+         lty=1,
+         lwd=2,
+         cex=1
+         )
+        }
+    }
+}
+```
+
+Now, let's check this finction by defining parameters in it.
+
+Set parameters
+---
+```{r parameters}
+osc3(r1=1,
+     alpha12=1,
+     r2=1,
+     alpha21 = 2,
+     N1_start = 2,
+     N2_start = 2,
+     t=100)
+
+
+```
+
+Let's change the parameters, forecasting what will happen to the two population overtime.
+
+Change parameters
+---
+```{r change parameters}
+osc3(1,2,2,3,2,2,100)
+
+
+```
+
+Now, let's check what will the plot look like when there is only one species exists.
+
+Situation will only one species
+---
+```{r one species}
+
+osc3(1,1,1,1,2,0,100)
+osc3(1,1,1,1,0,2,100)
+
+
+```
+
+In addition, I'd like to use another package specified in stability and demography analysis.
+
+Package phaseR
+---
+```{R phaseR package}
+library(phaseR)
+```
+Let's create another function called osc2
+
+Creating new function
+---
+```{R osc2}
+osc2<- function(t, y, parameters){
+  N1<-y[1]
+  N2<-y[2]
+  r1<-parameters[1]
+  alpha1<-parameters[2]
+  r2<-parameters[3]
+  alpha2<-parameters[4]
+  K1<-100
+  K2<-100
+  dy<-numeric(2)
+  dy[1]<- r1*N1*(K1-N1-alpha1*N2)/K1
+  dy[2]<- r2*N2*(K2-N2-alpha2*N1)/K2
+  list(dy)
+}
+
+```
+
+We can apply function in the package to check the oscillation between two competing species.
+
+Show oscillation
+---
+```{R show oscillation}
+numericalSolution(osc2, 
+          y0=c(2,2),
+          tlim=c(1,100),
+          parameters=c(1,1,1,2),
+          type='one',
+          col=c('red','blue'),
+          add.grid = T,
+          add.legend = T,
+         state.names=c('N1','N2')
+                  )
+
+```
+
