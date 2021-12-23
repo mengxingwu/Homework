@@ -1,0 +1,87 @@
+---
+title: "Practice M1"
+author: "Meng-Hsin, Wu"
+date: "2021/12/23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Let's load our packages for use.
+---
+```{r load package}
+library(qgraph)
+library(vegan)
+library(ade4)
+library(gclus)
+library(factoextra)
+library(fpc)
+library(ggplot2)
+library(gridExtra)
+library(e1071)
+library(corrplot)
+library(tree)
+library(rpart)
+library(rattle)
+library(randomForest)
+library(caret)
+library(mvabund)
+source('https://www.dipintothereef.com/uploads/3/7/3/5/37359245/coldiss.r')
+source ('https://www.dipintothereef.com/uploads/3/7/3/5/37359245/panelutils.r')
+```
+
+Let's input tikus for manipulation
+---
+```{r input tikus}
+data("tikus")
+head(tikus)
+str(tikus)
+tikus<-cbind(tikus$abund, tikus$x)
+tikus.2<-subset(tikus, time==c(81,83,85))
+head(tikus.2)
+```
+
+Estimate dissimilarity and plot the heat map
+---
+```{r dissimilarity}
+tikus.mat<-vegdist(tikus.2[,1:75])
+tikus.hm<-coldiss(tikus.mat,
+                  byrank=F,
+                  diag=T)
+par(mfrow=c(1,1))
+```
+
+Let's transpose the matrix
+---
+```{r transpose}
+tikus.3<-tikus.2[,1:75]
+#transpose matrix
+tikus.4<-t(tikus.3)
+```
+
+Building co-occurrence network
+---
+```{r co-occurrence network}
+#estimate binary distance between species
+tikus.binary<-dist(tikus.4, 
+                   method='binary')
+tikus.binary.2<-vegdist(tikus.4,
+                      method='jac',
+                      binary=T)
+tikus.binary.3<-vegdist(tikus.4, binary=T)
+qgraph(1-tikus.binary,
+       layout='spring',
+       diag=T)
+qgraph(1-tikus.binary.2,
+       layout='spring',
+       diag=T)
+qgraph(1-tikus.binary.3,
+       layout='spring',
+       diag=T)
+
+
+
+
+```
